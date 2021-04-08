@@ -6,7 +6,7 @@ module.exports = async function (context, req) {
      {name: 'Azure'},
      {name: 'Sammy'},
      {name: 'Azury'},
-     {name: 'Rolfs'},
+     {name: 'Rolfs'}
     ]
     context.res = {
         body: {
