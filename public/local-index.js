@@ -44,92 +44,13 @@ function displayTasks() {
 // Helper function to add task to UI
 function addTaskToDisplay(task) {
     // Create li element to store task display
-    const taskElement = document.createElement('li');
-
-    // create checkbox
-    const taskCompleteCheckbox = document.createElement('input');
-    taskCompleteCheckbox.type = 'checkbox';
-    // Set the ID of the checkbox to the id of the task
-    taskCompleteCheckbox.id = task._id;
-    // Set the checked property to the completion status of the task
-    // (Completed tasks will be checked)
-    taskCompleteCheckbox.checked = task.completed;
-    // Add event handler to each item for clicking on the checkbox
-    // When the checkbox is clicked, we will make a server call to toggle completed
-    taskCompleteCheckbox.addEventListener('change', updateTask);
-    // Add checkbox to li created earlier
-    taskElement.appendChild(taskCompleteCheckbox);
-    
-    // Create label for the task
-    const taskLabel = document.createElement('label');
-    // Set the for attribute so the checkbox is toggled when the label is clicked
-    taskLabel.setAttribute('for', task._id);
-    // Set the text to the title of the task
-    taskLabel.innerText = task.title;
-    // Set the completed CSS class if the task is completed
-    taskLabel.className = task.completed ? 'completed' : '';
-    // Add the label to the end of the li element
-    taskElement.appendChild(taskLabel);
+    const taskItem = document.createElement('a');
+    taskItem.href = '#';
+    taskItem.innerText = task.name;
+    taskItem.className = 'list-group-item';
 
     // Get the ul element from the page
     const taskListElement = document.getElementById('task-list');
     // Add the new task to the list on the page
-    taskListElement.appendChild(taskElement);
+    taskListElement.appendChild(taskItem);
 }
-
-// Event listener for checkbox change
-async function updateTask(e) {
-    // Get the ID of the task
-    const taskId = e.target.id;
-
-    // Find the task from the array
-    const task = tasks.find(t => t._id === taskId);
-    // If no task is found (shouldn't happen), just return
-    if (!task) return;
-    // Toggle completed status
-    task.completed = !task.completed;
-
-    // Get the label for the task, which contains the string
-    // We find this by using nextSibling
-    // It is next to the checkbox, which is in e.target
-    const taskLabel = e.target.nextSibling;
-    // Set the class for the task based on completed status
-    taskLabel.className = task.completed ? 'completed' : '';
-    // Call the server to save the changes
-    await fetch(
-        `/api/tasks/${taskId}`, // URL of the API
-        {
-            method: 'PUT', // method to modify items
-            body: JSON.stringify(task), // put task in body
-            headers: {
-                'Content-Type': 'application/json' // indicate return type of JSON
-            }
-        }
-    );
-}
-
-// Event listener for new tasks being created
-document.getElementById('task-register').addEventListener('click', async () => {
-    // Create task by retrieving text from textbox
-    const task = {
-        title: document.getElementById('task-title').value
-    };
-    // Call server
-    const response = await fetch(
-        '/api/tasks', // API location
-        {
-            method: 'POST', // POST to create new item
-            body: JSON.stringify(task), // Add task to body
-            headers: {
-                'Content-Type': 'application/json' // Set return type to JSON
-            }
-        }
-    );
-
-    // Get the task returned from the server (it will have a new id)
-    const loadedTask = await response.json();
-    // Add the task to the array for local storage
-    tasks.push(loadedTask);
-    // Add the new task to the display
-    addTaskToDisplay(loadedTask);
-});
