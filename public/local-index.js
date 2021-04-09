@@ -44,10 +44,8 @@ function displayTasks() {
 // Helper function to add task to UI
 function addTaskToDisplay(task) {
     // Create li element to store task display
-    const taskItem = document.createElement('a');
-    taskItem.href = '#';
-    taskItem.innerText = task.name;
-    taskItem.className = 'list-group-item';
+    const taskItem = document.createElement('li');
+    taskItem.innerText = task.name + " - " + task.desc ;
 
     // Get the ul element from the page
     const taskListElement = document.getElementById('task-list');
